@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# Banner color
+banner_color="\e[1;34m"
+
+# News colors
+news_header_color="\e[1;32m"
+news_title_color="\e[1;31m"
+news_link_color="\e[1;37m"
+
+# Weather colors
+weather_header_color="\e[1;35m"
+
+# City you want to find weather of
+weather_city="seattle"
+
+check_internet() {
+  access=$(nc -z 8.8.8.8 53  >/dev/null 2>&1)
+  if [ ${access} -eq 0 ]; then
+    return true
+  else
+    return false;
+  fi
+}
+
+# Get banner
+banner() {
+
+  # IP address
+  # Just grab it from an external service
+  ip=$(curl -s ipinfo.io/ip 2> /dev/null)
+
+  # Datetime
+  dt=$(date '+%a %h %d at%l:%M:%S %p')
+
+  # Show banner
+  printf "\n${banner_color}   ---   WELCOME   ---\n"
+  printf "${dt} | ${ip}\e[0m\n\n"
+  fortune # Can be removed if desired
+
+}
+
+# Get weather
+weather() {
+
+  # You can try a different website but this also gets you a nice ascii graphic
+  weather=$(curl -s http://wttr.in/${weather_city} 2> /dev/null | head -n7)
+  printf "${weather_header_color}   ---   WEATHER   ---\e[0m\n"
+  printf "${weather}\n"
+
+}
+
+# Get Hacker News
+hackernews() {
+
+  # Get hacker news
+  printf "${news_header_color}   --- HACKER NEWS ---\e[0m\n"
+
+  # Credit to (https://github.com/jeyb/hackernews)
+  curl -s "https://news.ycombinator.com/rss" 2> /dev/null |
+    grep -Eio "<item>.*</item>" |
+    grep -Eio "<(title|link)>[^<>]*</(title|link)>" |
+    sed -Ee "s/<title>([^<>]*)<\/title>/`printf ${news_title_color}`\1/" \
+      -e "s/<link>([^<>]*)<\/link>/`printf ${news_link_color}`\1/" \
+      -e "s/&#x2F;/\//g" \
+      -e "s/&#x27;/'/g" |
+    head -n 18
+  printf "\033[0m\n"
+
+}
+
+main() {
+
+  # Script is pretty pointless without internet
+  if [ check_internet == false ]; then
+    echo "No internet access."
+    exit 1
+  fi
+
+  banner
+  printf "\n\n"
+  weather
+  printf "\n\n"
+  hackernews
+
+}
+
+main
