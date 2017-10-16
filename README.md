@@ -1,9 +1,5 @@
 # welcome
-Login script that gets your public ip, local weather, and top posts from Hacker News and displays it in your terminal
-
-Here is what a typical output might look like. Most graphical terminals have support for clickable hyperlinks, the one in the picture is xfce4-terminal for example.
-
-![Example Output](https://github.com/surrsurus/welcome/blob/master/media/output.png)
+Welcome is an an automation script you can run to run everyday tasks all at once right in your terminal. Welcome will show you your public IP, tasks in your to do list, local weather report, and top posts from hackernews.
 
 ## Requirements
-The script assumes you have `curl` and `fortune` installed. `curl` is definitely necessary to get information such as weather and Hacker News posts, though you can simply delete fortune from the script if you want.
+The script assumes you have `curl` and `fortune` installed. `curl` is definitely necessary to get information such as weather and Hacker News posts, though you can simply delete fortune from the script if you want. This script also assumes you have `todo` in your PATH, where `todo` is a script I made earlier that you can find [here](https://github.com/surrsurus/todo).
