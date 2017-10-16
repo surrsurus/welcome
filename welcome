@@ -12,7 +12,10 @@ news_link_color="\e[1;37m"
 weather_header_color="\e[1;35m"
 
 # City you want to find weather of
-weather_city="seattle"
+weather_city=""
+
+# To do header colors
+todo_header_color="\e[1;31m"
 
 check_internet() {
   access=$(nc -z 8.8.8.8 53  >/dev/null 2>&1)
@@ -31,7 +34,7 @@ banner() {
   ip=$(curl -s ipinfo.io/ip 2> /dev/null)
 
   # Datetime
-  dt=$(date '+%a %h %d at%l:%M:%S %p')
+  dt=$(date '+%a %h %d at %l:%M:%S %p')
 
   # Show banner
   printf "\n${banner_color}   ---   WELCOME   ---\n"
@@ -53,7 +56,6 @@ weather() {
 # Get Hacker News
 hackernews() {
 
-  # Get hacker news
   printf "${news_header_color}   --- HACKER NEWS ---\e[0m\n"
 
   # Credit to (https://github.com/jeyb/hackernews)
@@ -69,6 +71,14 @@ hackernews() {
 
 }
 
+# Get todo list
+td() {
+
+  printf "${todo_header_color}   ---    TO DO    ---\e[0m\n"
+  todo
+
+}
+
 main() {
 
   # Script is pretty pointless without internet
@@ -78,6 +88,8 @@ main() {
   fi
 
   banner
+  printf "\n\n"
+  td
   printf "\n\n"
   weather
   printf "\n\n"
