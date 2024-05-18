@@ -47,8 +47,9 @@ banner() {
 weather() {
 
   # You can try a different website but this also gets you a nice ascii graphic
+  weather=$(curl -s http://wttr.in/${weather_city} 2> /dev/null | head -n7)
   printf "${weather_header_color}   ---   WEATHER   ---\e[0m\n"
-  curl -s http://wttr.in/${weather_city} 2> /dev/null | head -n7
+  printf "${weather}\n"
 
 }
 
@@ -60,9 +61,9 @@ hackernews() {
   # Credit to (https://github.com/jeyb/hackernews)
   curl -s "https://news.ycombinator.com/rss" 2> /dev/null |
     grep -Eio "<item>.*</item>" |
-    grep -Eio "<(title)>[^<>]*</(title)>" |
-    sed -Ee "s/<title>([^<>]*)<\/title>/\1/" \
-      -e "s/<link>([^<>]*)<\/link>/\1/" \
+    grep -Eio "<(title|link)>[^<>]*</(title|link)>" |
+    sed -Ee "s/<title>([^<>]*)<\/title>/`printf ${news_title_color}`\1/" \
+      -e "s/<link>([^<>]*)<\/link>/`printf ${news_link_color}`\1/" \
       -e "s/&#x2F;/\//g" \
       -e "s/&#x27;/'/g" |
     head -n 18
@@ -88,9 +89,9 @@ main() {
 
   banner
   printf "\n\n"
-
-  paste <(weather) <(td)
-
+  td
+  printf "\n\n"
+  weather
   printf "\n\n"
   hackernews
 
