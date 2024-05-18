@@ -12,7 +12,7 @@ news_link_color="\e[1;37m"
 weather_header_color="\e[1;35m"
 
 # City you want to find weather of
-weather_city=""
+weather_city="philadelphia"
 
 # To do header colors
 todo_header_color="\e[1;31m"
@@ -47,9 +47,8 @@ banner() {
 weather() {
 
   # You can try a different website but this also gets you a nice ascii graphic
-  weather=$(curl -s http://wttr.in/${weather_city} 2> /dev/null | head -n7)
   printf "${weather_header_color}   ---   WEATHER   ---\e[0m\n"
-  printf "${weather}\n"
+  curl -s http://wttr.in/${weather_city} 2> /dev/null | head -n7
 
 }
 
@@ -61,9 +60,9 @@ hackernews() {
   # Credit to (https://github.com/jeyb/hackernews)
   curl -s "https://news.ycombinator.com/rss" 2> /dev/null |
     grep -Eio "<item>.*</item>" |
-    grep -Eio "<(title|link)>[^<>]*</(title|link)>" |
-    sed -Ee "s/<title>([^<>]*)<\/title>/`printf ${news_title_color}`\1/" \
-      -e "s/<link>([^<>]*)<\/link>/`printf ${news_link_color}`\1/" \
+    grep -Eio "<(title)>[^<>]*</(title)>" |
+    sed -Ee "s/<title>([^<>]*)<\/title>/\1/" \
+      -e "s/<link>([^<>]*)<\/link>/\1/" \
       -e "s/&#x2F;/\//g" \
       -e "s/&#x27;/'/g" |
     head -n 18
@@ -89,9 +88,9 @@ main() {
 
   banner
   printf "\n\n"
-  td
-  printf "\n\n"
-  weather
+
+  paste <(weather) <(td)
+
   printf "\n\n"
   hackernews
 
